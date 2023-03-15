@@ -1,78 +1,58 @@
+#include "main.h"
 #include <stdlib.h>
-#include "holberton.h"
-
+#include <string.h>
 /**
- * count_word - helper function to count the number of words in a string
- * @s: string to evaluate
+ * strtow - a function that splits a string into words.
+ * @str: string
  *
- * Return: number of words
- */
-int count_word(char *s)
-{
-	int flag, c, w;
-
-	flag = 0;
-	w = 0;
-
-	for (c = 0; s[c] != '\0'; c++)
-	{
-		if (s[c] == ' ')
-			flag = 0;
-		else if (flag == 0)
-		{
-			flag = 1;
-			w++;
-		}
-	}
-
-	return (w);
-}
-/**
- * **strtow - splits a string into words
- * @str: string to split
+ * Each element of this array should contain a single word, null-terminated
+ * The last element of the returned array should be NULL
+ * Words are separated by spaces
+ * Returns NULL if str == NULL or str == ""
  *
- * Return: pointer to an array of strings (Success)
- * or NULL (Error)
+ * Return: a pointer to an array of strings (words)
  */
+
 char **strtow(char *str)
 {
-	char **matrix, *tmp;
-	int i, k = 0, len = 0, words, c = 0, start, end;
+	char **strw;
+	int i = 0, j, p = 0, l, n;
 
-	while (*(str + len))
-		len++;
-	words = count_word(str);
-	if (words == 0)
+	if (str == NULL || *str == '\0')
 		return (NULL);
 
-	matrix = (char **) malloc(sizeof(char *) * (words + 1));
-	if (matrix == NULL)
-		return (NULL);
-
-	for (i = 0; i <= len; i++)
+	l = strlen(str);
+	strw = malloc(l * sizeof(char *));
+	if (strw == NULL)
 	{
-		if (str[i] == ' ' || str[i] == '\0')
-		{
-			if (c)
-			{
-				end = i;
-				tmp = (char *) malloc(sizeof(char) * (c + 1));
-				if (tmp == NULL)
-					return (NULL);
-
-				while (start < end)
-				*tmp++ = str[start++];
-				*tmp = '\0';
-				matrix[k] = tmp - c;
-				k++;
-				c = 0;
-			}
-		}
-		else if (c++ == 0)
-			start = i;
+		free(strw);
+		return (NULL);
 	}
 
-	matrix[k] = NULL;
-
-	return (matrix);
+	while (str[i] != '\0')
+	{
+		if (str[i] != ' ' && str[i - 1] == ' ')
+		{
+			j = 1;
+			while (str[i + j] != ' ')
+				j++;
+			strw[p] = malloc(j * sizeof(char));
+			if (strw[p] == NULL)
+			{
+				while (p--)
+					free(strw[p]);
+				free(strw);
+				return (NULL);
+			}
+			for (n = 0; n < j; n++)
+				strw[p][n] = str[i + n];
+			strw[p][n] = '\0';
+			p++;
+			i += j;
+		}
+		else
+			i++;
+	}
+	strw[p] = NULL;
+	return (strw);
 }
