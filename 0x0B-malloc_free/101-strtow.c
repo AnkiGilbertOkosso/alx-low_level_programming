@@ -1,58 +1,74 @@
-#include "main.h"
 #include <stdlib.h>
-#include <string.h>
 /**
- * strtow - a function that splits a string into words.
- * @str: string
+ * wrdcnt - counts the number of words in a string
+ * @s: string to count
  *
- * Each element of this array should contain a single word, null-terminated
- * The last element of the returned array should be NULL
- * Words are separated by spaces
- * Returns NULL if str == NULL or str == ""
- *
- * Return: a pointer to an array of strings (words)
+ * Return: int of number of words
  */
+int wrdcnt(char *s)
+{
+	int i, n = 0;
 
+	for (i = 0; s[i]; i++)
+	{
+		if (s[i] == ' ')
+		{
+			if (s[i + 1] != ' ' && s[i + 1] != '\0')
+				n++;
+		}
+		else if (i == 0)
+			n++;
+	}
+	n++;
+	return (n);
+}
+
+/**
+ * strtow - splits a string into words
+ * @str: string to split
+ *
+ * Return: pointer to an array of strings
+ */
 char **strtow(char *str)
 {
-	char **strw;
-	int i = 0, j, p = 0, l, n;
+	int i, j, k, l, n = 0, wc = 0;
+	char **w;
 
 	if (str == NULL || *str == '\0')
 		return (NULL);
-
-	l = strlen(str);
-	strw = malloc(l * sizeof(char *));
-	if (strw == NULL)
-	{
-		free(strw);
+	n = wrdcnt(str);
+	if (n == 1)
 		return (NULL);
-	}
-
-	while (str[i] != '\0')
+	w = (char **)malloc(n * sizeof(char *));
+	if (w == NULL)
+		return (NULL);
+	w[n - 1] = NULL;
+	i = 0;
+	while (str[i])
 	{
-		if (str[i] != ' ' && str[i - 1] == ' ')
+		if (str[i] != ' ' && (i == 0 || str[i - 1] == ' '))
 		{
-			j = 1;
-			while (str[i + j] != ' ')
-				j++;
-			strw[p] = malloc(j * sizeof(char));
-			if (strw[p] == NULL)
+			for (j = 1; str[i + j] != ' ' && str[i + j]; j++)
+				;
+			j++;
+			w[wc] = (char *)malloc(j * sizeof(char));
+			j--;
+			if (w[wc] == NULL)
 			{
-				while (p--)
-					free(strw[p]);
-				free(strw);
+				for (k = 0; k < wc; k++)
+					free(w[k]);
+				free(w[n - 1]);
+				free(w);
 				return (NULL);
 			}
-			for (n = 0; n < j; n++)
-				strw[p][n] = str[i + n];
-			strw[p][n] = '\0';
-			p++;
+			for (l = 0; l < j; l++)
+				w[wc][l] = str[i + l];
+			w[wc][l] = '\0';
+			wc++;
 			i += j;
 		}
 		else
 			i++;
 	}
-	strw[p] = NULL;
-	return (strw);
+	return (w);
 }
