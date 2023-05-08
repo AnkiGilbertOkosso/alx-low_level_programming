@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
 	in = open(argv[1], O_RDONLY);
 	if (in == -1)
 	{
-		dprintf(STDERR_FILENO, "Error: Can't read from %s\n", arg[1]);
+		dprintf(STDERR_FILENO, "Error: Can't read from %s\n", argv[1]);
 		exit(98);
 	}
 	out = open(argv[2], O_TRUNC | O_CREAT | O_WRONLY, 0664);
