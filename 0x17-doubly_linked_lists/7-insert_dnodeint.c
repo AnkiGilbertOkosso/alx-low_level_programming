@@ -40,7 +40,7 @@ dlistint_t *insert_dnodeint_at_index(dlistint_t **h, unsigned int idx, int n)
 						r->next = head->next;
 						r->prev = head;
 						head->next->prev = r;
-						head->next = real;
+						head->next = r;
 					}
 				}
 				break;
